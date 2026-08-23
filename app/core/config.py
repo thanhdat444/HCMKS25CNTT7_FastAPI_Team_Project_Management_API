@@ -5,7 +5,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
-    ALLOWED_ORIGINS: list[str] = ["http://localhost:3000","http://localhost:5173"]
+    # ALLOWED_ORIGINS: list[str] = ["http://localhost:3000","http://localhost:5173"]
 
     class Config:
         env_file = ".env"

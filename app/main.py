@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from app.db.database import Base, engine
 from app.models import project, project_members, task, user
+from app.routers.auth import router as auth_router
 
 app = FastAPI()
 
@@ -20,6 +21,8 @@ def http_exception_handler(request: Request, exc: HTTPException):
             }
         }
     )
+
+app.include_router(auth_router)
 
 @app.get("/")
 def root():
