@@ -35,7 +35,7 @@ async def get_current_user(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    except jwt.PyJWKError:
+    except jwt.PyJWTError:
         raise credentials_exception
 
     user = db.query(UserModel).filter(UserModel.email == email).first()
