@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from app.models.user import UserModel
-from app.dependencies.dependencie import get_current_user
+from app.dependencies.dependencie import get_current_user, RoleChecker
 
 router = APIRouter(
     prefix="/users",
@@ -17,4 +17,12 @@ def get_my_profile(current_user: UserModel = Depends(get_current_user)):
             "fullname": current_user.fullname,
             "role": current_user.role
         }
+    }
+
+@router.get("")
+def get_admin_dashboard(current_user: UserModel = Depends(RoleChecker(["ADMIN"]))):
+    return {
+        "status": "success",
+        "message": "Chào mừng Admin!",
+        "secret_data": "Đây là dữ liệu tuyệt mật chỉ Admin mới thấy."
     }
