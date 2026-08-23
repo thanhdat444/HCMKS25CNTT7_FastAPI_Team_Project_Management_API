@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
-from app.schemas.user import UserCreate
+from app.schemas.user import UserCreate, UserLogin
 from app.models.user import UserModel
-from app.core.security import hash_password
+from app.core.security import hash_password, verify_password
 from app.core.exceptions import bad_request
 
 
@@ -32,3 +32,12 @@ def register_user(user_data: UserCreate, db: Session):
     db.refresh(new_user)
 
     return new_user
+
+def authenticate_user(user_data: UserLogin, db: Session):
+
+    user = db.query(UserModel).filter(UserModel.email == user_data.email).first()
+
+    if (not user or not verify_password(user_data.password, user.password_hash)):
+        raise bad_request("Email hoặc Mặt khẩu không đúng")
+
+    return user
