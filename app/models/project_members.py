@@ -11,7 +11,7 @@ class ProjectMemberModel(Base):
 
     user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
 
-    role = Column(String(50), nullable=False)
+    role = Column(String(50), nullable=False, default="MEMBER")
 
     joined_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
