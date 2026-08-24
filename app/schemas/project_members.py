@@ -15,7 +15,13 @@ class ProjectMemberUpdate(BaseModel):
     role: str | None = None
 
 
-class ProjectMemberResponse(ProjectMemberBase):
+class ProjectMemberDetailResponse(ProjectMemberBase):
     joined_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+class ProjectMemberResponse(BaseModel):
+    user_id: int
+    role: str
 
     model_config = ConfigDict(from_attributes=True)
