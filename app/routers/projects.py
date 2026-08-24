@@ -26,3 +26,11 @@ def get_project(
     db: Session = Depends(get_db)
 ):
     return service.get_project_service(db, current_data, name)
+
+@router.get("/{id}", response_model=ProjectResponse)
+def get_project_by_id(
+    id: int, 
+    current_data: UserModel = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    return service.get_project_by_id_service(db, current_data, id)
