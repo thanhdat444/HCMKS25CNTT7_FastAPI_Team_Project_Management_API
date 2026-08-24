@@ -4,6 +4,7 @@ from app.dependencies.dependencie import get_current_user, RoleChecker
 from sqlalchemy.orm import Session
 from app.db.database import get_db
 from app.schemas.user import UserResponse
+import  app.services.user_service as service
 
 router = APIRouter(
     prefix="/users",
@@ -34,14 +35,5 @@ def get_users(
 
     db: Session = Depends(get_db)
 ):
-    query = db.query(UserModel)
-
-    if name:query = query.filter(UserModel.fullname.contains(name))
-
-    if email:
-        query = query.filter(UserModel.email.contains(email))
-
-    if is_active is not None:
-        query = query.filter(UserModel.is_active == is_active)
-
-    return query.all()
+    
+    return service.get_users_service(db, name, email, is_active)
