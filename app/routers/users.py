@@ -8,7 +8,7 @@ import  app.services.user_service as service
 
 router = APIRouter(
     prefix="/users",
-    tags=["Users"]
+    tags=["Protected Routes"]
 )
 
 @router.get("/me")
