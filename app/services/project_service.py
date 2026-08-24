@@ -12,6 +12,9 @@ def create_project_service(
     current_data: UserModel, 
     db: Session
 ):
+    if (not project_data.name.strip()):
+        raise bad_request("Project name cannot be empty")
+    
     new_project = ProjectModel(
         name = project_data.name,
         description = project_data.description,
