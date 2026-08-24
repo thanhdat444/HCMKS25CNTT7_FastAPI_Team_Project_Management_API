@@ -1,4 +1,4 @@
-from app.schemas.project import ProjectCreate
+from app.schemas.project import ProjectCreate, ProjectUpdate
 from sqlalchemy import or_
 from app.models.project import ProjectModel
 from app.models.project_members import ProjectMemberModel
@@ -71,7 +71,61 @@ def get_project_by_id_service(
         .first()
     )
 
-    if not project:
+    if (not project):
         raise not_found("Project not found or you are not a member of this project")
 
     return project
+
+def update_project_service(
+    db: Session,
+    current_data: UserModel,
+    project_id: int,
+    data: ProjectUpdate  
+):
+    project = (
+        db.query(ProjectModel)
+        .filter(
+            project_id == ProjectModel.id,
+            current_data.id == ProjectModel.owner_id
+        )
+        .first()
+    )
+
+    if (not project):
+        raise not_found("Project not found or you are not the owner")
+
+    project.name = data.name
+    project.description = data.description
+
+    db.commit()
+    db.refresh(project)
+
+    return project
+
+def delete_project_service(
+    db: Session,
+    current_data: UserModel,
+    project_id: int,  
+):
+    project = (
+        db.query(ProjectModel)
+        .filter(
+            project_id == ProjectModel.id,
+            current_data.id == ProjectModel.owner_id
+        )
+        .first()
+    )
+
+    if (not project):
+        raise not_found("Project not found or you are not the owner")
+
+    db.query(ProjectMemberModel).filter(
+        ProjectMemberModel.project_id == project_id
+    ).delete()
+
+    db.delete(project)
+    db.commit()
+
+    return {
+        "message": "Project deleted successfully"
+    }
