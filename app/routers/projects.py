@@ -18,3 +18,11 @@ def create_project(
     db: Session = Depends(get_db)
 ):
     return service.create_project_service(project_data, current_data, db)
+
+@router.get("", response_model=list[ProjectResponse])
+def get_project(
+    name: str | None = None,
+    current_data: UserModel = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    return service.get_project_service(db, current_data, name)

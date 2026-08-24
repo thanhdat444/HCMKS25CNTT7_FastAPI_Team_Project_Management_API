@@ -1,5 +1,5 @@
 from app.schemas.project import ProjectCreate
-
+from sqlalchemy import or_
 from app.models.project import ProjectModel
 from app.models.project_members import ProjectMemberModel
 from app.models.user import UserModel
@@ -31,3 +31,23 @@ def create_project_service(
     db.refresh(new_project)
 
     return new_project
+
+def get_project_service(db: Session, current_data: UserModel, name: str | None = None):
+    query = (
+        db.query(ProjectModel)
+        .outerjoin(
+            ProjectMemberModel, 
+            ProjectMemberModel.project_id == ProjectModel.id
+        )
+        .filter(
+            or_(
+                ProjectModel.owner_id == current_data.id,
+                ProjectMemberModel.user_id == current_data.id
+            )
+        )
+    )
+
+    if (name):
+        query = query.filter(ProjectModel.name.ilike(f"%{name}%"))
+
+    return query.distinct().all()
