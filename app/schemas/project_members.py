@@ -4,14 +4,14 @@ from datetime import datetime
 class ProjectMemberBase(BaseModel):
     project_id: int
     user_id: int
-    role: str
+    role: str = "MEMBER"
 
 
 class ProjectMemberCreate(ProjectMemberBase):
     pass
 
 
-class ProjectMemberUpdate(ProjectMemberBase):
+class ProjectMemberUpdate(BaseModel):
     role: str | None = None
 
 
