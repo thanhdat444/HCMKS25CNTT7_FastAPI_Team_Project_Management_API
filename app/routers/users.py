@@ -29,9 +29,7 @@ def get_users(
     email: str | None = None,
     is_active: bool | None = None,
 
-    current_user: UserModel = Depends(
-        RoleChecker(["ADMIN"])
-    ),
+    current_user: UserModel = Depends(RoleChecker(["ADMIN"])),
 
     db: Session = Depends(get_db)
 ):
