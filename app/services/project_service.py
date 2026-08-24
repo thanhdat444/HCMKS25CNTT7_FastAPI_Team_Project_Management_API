@@ -5,6 +5,7 @@ from app.models.project_members import ProjectMemberModel
 from app.models.user import UserModel
 from sqlalchemy.orm import Session
 from app.core.exceptions import not_found
+from fastapi import HTTPException, status
 
 def create_project_service(
     project_data: ProjectCreate, 
@@ -129,3 +130,57 @@ def delete_project_service(
     return {
         "message": "Project deleted successfully"
     }
+
+def add_member_project_service(
+    db: Session,
+    current_data: UserModel,
+    project_id: int,
+    user_id: int
+):
+    project = (
+        db.query(ProjectModel)
+        .filter(
+            current_data.id == ProjectModel.owner_id,
+            project_id == ProjectModel.id
+        )
+        .first()
+    )
+
+    if (not project):
+        raise not_found("Project not found or you are not the owner")
+
+    user = (
+        db.query(UserModel)
+        .filter(user_id == UserModel.id)
+        .first()
+    )
+
+    if (not user):
+        raise not_found("User not found")
+
+    member = (
+        db.query(ProjectMemberModel)
+        .filter(
+            ProjectMemberModel.user_id == user_id,
+            ProjectMemberModel.project_id == project_id
+        )
+        .first()
+    )
+
+    if (member):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="User is already a member of this project"
+        )
+
+    new_user = ProjectMemberModel(
+        project_id = project.id,
+        user_id = user.id,
+        role = "MEMBER"
+    )
+
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    return new_user

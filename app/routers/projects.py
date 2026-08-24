@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, status
 from app.schemas.project import ProjectCreate, ProjectResponse, ProjectUpdate
+from app.schemas.project_members import ProjectMemberResponse
 from app.db.database import get_db
 import app.services.project_service as service
 from app.models.user import UserModel
@@ -51,3 +52,12 @@ def delete_project(
     db: Session = Depends(get_db)
 ):
     return service.delete_project_service(db, current_data, id)
+
+@router.post("/{id}/members", response_model=ProjectMemberResponse)
+def add_member_project(
+    id: int,
+    user_id: int,
+    current_data: UserModel = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    return service.add_member_project_service(db, current_data, id, user_id)
