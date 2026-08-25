@@ -30,12 +30,4 @@ def login_user(user_data: UserLogin, db: Session = Depends(get_db)):
         "message": "Đăng nhập thành công",
         "access_token": access_token,
         "token_type": "bearer",
-        "data": {
-            "id": user.id,
-            "email": user.email,
-            "fullname": user.fullname,
-            "role": user.role,
-            "is_active": user.is_active,
-            "created_at": user.created_at
         }
-    }

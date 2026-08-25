@@ -107,7 +107,7 @@ def get_member_project_service(
 ):
     project = (
         db.query(ProjectModel)
-        .outerjoin(
+        .join(
             ProjectMemberModel,
             ProjectMemberModel.project_id == ProjectModel.id
         )

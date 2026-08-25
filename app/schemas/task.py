@@ -1,5 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
+from typing import Literal
 
 
 class TaskBase(BaseModel):
@@ -12,8 +13,12 @@ class TaskBase(BaseModel):
     due_date: datetime | None = None
 
 
-class TaskCreate(TaskBase):
-    pass
+class TaskCreate(BaseModel):
+    title: str
+    description: str | None = None
+    priority: str
+    due_date: datetime | None = None
+    priority: Literal["LOW", "MEDIUM", "HIGH"]
 
 
 class TaskUpdate(BaseModel):

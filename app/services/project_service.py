@@ -39,7 +39,7 @@ def create_project_service(
 def get_project_service(db: Session, current_data: UserModel, name: str | None = None):
     query = (
         db.query(ProjectModel)
-        .outerjoin(
+        .join(
             ProjectMemberModel, 
             ProjectMemberModel.project_id == ProjectModel.id
         )
@@ -63,7 +63,7 @@ def get_project_by_id_service(
 ):
     project = (
         db.query(ProjectModel)
-        .outerjoin(
+        .join(
             ProjectMemberModel, 
             ProjectMemberModel.project_id == ProjectModel.id
         )

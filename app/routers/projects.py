@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, status
 from app.schemas.project import ProjectCreate, ProjectResponse, ProjectUpdate, ProjecDetailtResponse
-from app.schemas.project_members import ProjectMemberResponse, ProjectMemberDetailResponse
 from app.db.database import get_db
 import app.services.project_service as service
 from app.models.user import UserModel

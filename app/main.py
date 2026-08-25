@@ -6,6 +6,7 @@ from app.routers.auth import router as auth_router
 from app.routers.users import router as user_router
 from app.routers.projects import router as project_router
 from app.routers.project_member import router as project_member_router
+from app.routers.tasks import router as task_router
 
 app = FastAPI()
 
@@ -29,6 +30,7 @@ app.include_router(auth_router)
 app.include_router(user_router)
 app.include_router(project_router)
 app.include_router(project_member_router)
+app.include_router(task_router)
 
 @app.get("/")
 def root():

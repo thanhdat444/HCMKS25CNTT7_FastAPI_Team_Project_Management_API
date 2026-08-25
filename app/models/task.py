@@ -15,7 +15,7 @@ class TaskModel(Base):
 
     assignee_id = Column(Integer, ForeignKey("users.id"))
 
-    status = Column(String(50), nullable=False)
+    status = Column(String(50), nullable=False, default="TODO")
     priority = Column(String(50), nullable=False)
     due_date = Column(DateTime)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
