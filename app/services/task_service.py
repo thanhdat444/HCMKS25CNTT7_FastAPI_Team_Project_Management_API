@@ -213,6 +213,7 @@ def delete_task_service(
 
     if (member.role != "OWNER"):
             raise forbidden("Only owner can delete task")
+    
 
     db.delete(task)
     db.commit()
