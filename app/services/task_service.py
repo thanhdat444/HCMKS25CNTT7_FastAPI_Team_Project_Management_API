@@ -148,6 +148,9 @@ def update_task_service(
     if (not member):
         raise forbidden("You are not a member of this project")
 
+    if (member.role != "OWNER" and task.assignee_id != current_data.id):
+        raise forbidden("You do not have permission to update this task")
+
     update_data = task_data.model_dump(exclude_unset=True)
 
     user = (
@@ -207,6 +210,9 @@ def delete_task_service(
     
     if (not member):
         raise forbidden("You are not a member of this project")
+
+    if (member.role != "OWNER"):
+            raise forbidden("Only owner can delete task")
 
     db.delete(task)
     db.commit()
