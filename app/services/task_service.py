@@ -143,3 +143,38 @@ def update_task_service(
     db.refresh(task)
 
     return task
+
+def delete_task_service(
+    task_id: int,
+    current_data: UserModel,
+    db: Session      
+):
+    task = (
+        db.query(TaskModel)
+        .filter(
+            task_id == TaskModel.id
+        )
+        .first()
+    )
+
+    if not task:
+        raise not_found("Task not found")
+
+    member = (
+        db.query(ProjectMemberModel)
+        .filter(
+            ProjectMemberModel.user_id == current_data.id,
+            ProjectMemberModel.project_id == task.project_id
+        )
+        .first()
+    )
+    
+    if (not member):
+        raise forbidden("You are not a member of this project")
+
+    db.delete(task)
+    db.commit()
+
+    return {
+        "message": "Task deleted successfully"
+    }

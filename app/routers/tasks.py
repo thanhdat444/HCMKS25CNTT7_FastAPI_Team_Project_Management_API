@@ -44,3 +44,11 @@ def update_task(
     db: Session = Depends(get_db)
 ):
     return service.update_task_service(task_id, task_data, current_user, db)
+
+@router.delete("/{task_id}")
+def delete_task(
+    task_id: int,
+    current_user: UserModel = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    return service.delete_task_service(task_id,current_user,db)
