@@ -43,6 +43,10 @@ def get_tasks_service(
     db: Session,
     current_user: UserModel,
     project_id: int,
+    status: str | None = None,
+    priority: str | None = None,
+    assignee_id: int | None = None,
+    title: str | None = None
 ):
     member = (
         db.query(ProjectMemberModel)
@@ -56,15 +60,24 @@ def get_tasks_service(
     if (not member):
         raise forbidden("You are not a member of this project")
 
-    tasks = (
+    query = (
         db.query(TaskModel)
-        .filter(
-            project_id == TaskModel.project_id
-        )
-        .all()
+        .filter(project_id == TaskModel.project_id)
     )
 
-    return tasks
+    if (status):
+        query = query.filter(TaskModel.status == status)
+
+    if priority:
+        query = query.filter(TaskModel.priority == priority)
+
+    if assignee_id:
+        query = query.filter(TaskModel.assignee_id == assignee_id)
+
+    if title:
+        query = query.filter(TaskModel.title.ilike(f"%{title}%"))
+
+    return query.all()
 
 def get_task_by_id_service(
     db: Session,
