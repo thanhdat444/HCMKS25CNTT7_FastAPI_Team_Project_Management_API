@@ -46,7 +46,10 @@ def get_tasks_service(
     status: str | None = None,
     priority: str | None = None,
     assignee_id: int | None = None,
-    title: str | None = None
+    title: str | None = None,
+    limit: int = 10,
+    offset: int = 0,
+    sort_by: str = "created_at"
 ):
     member = (
         db.query(ProjectMemberModel)
@@ -71,12 +74,19 @@ def get_tasks_service(
     if priority:
         query = query.filter(TaskModel.priority == priority)
 
-    if assignee_id:
+    if (assignee_id is not None):
         query = query.filter(TaskModel.assignee_id == assignee_id)
 
     if title:
         query = query.filter(TaskModel.title.ilike(f"%{title}%"))
 
+    if (sort_by == "created_at"):
+        query = query.order_by(TaskModel.created_at.desc())
+    elif(sort_by == "due_date"):
+        query = query.order_by(TaskModel.due_date.asc())
+
+    query = query.limit(limit).offset(offset)
+    
     return query.all()
 
 def get_task_by_id_service(

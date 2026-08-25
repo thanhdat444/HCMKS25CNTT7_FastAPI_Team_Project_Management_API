@@ -24,9 +24,27 @@ def create_task(
 def get_tasks(
     id: int, 
     current_user: UserModel = Depends(get_current_user), 
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    status: str | None = None,
+    priority: str | None = None,
+    assignee_id: int | None = None,
+    title: str | None = None,
+    limit: int = 10,
+    offset: int = 0,
+    sort_by: str = "created_at",
 ): 
-    return service.get_tasks_service(db, current_user, id)
+    return service.get_tasks_service(
+        db,
+        current_user,
+        id,
+        status,
+        priority,
+        assignee_id,
+        title,
+        limit,
+        offset,
+        sort_by,
+    )
 
 @router.get("/tasks/{id}", response_model=TaskResponse)
 def get_task_by_id(
