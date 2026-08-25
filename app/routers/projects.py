@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, status
-from app.schemas.project import ProjectCreate, ProjectResponse, ProjectUpdate
+from app.schemas.project import ProjectCreate, ProjectResponse, ProjectUpdate, ProjecDetailtResponse
 from app.schemas.project_members import ProjectMemberResponse, ProjectMemberDetailResponse
 from app.db.database import get_db
 import app.services.project_service as service
@@ -28,7 +28,7 @@ def get_project(
 ):
     return service.get_project_service(db, current_data, name)
 
-@router.get("/{id}", response_model=ProjectResponse)
+@router.get("/{id}", response_model=ProjecDetailtResponse)
 def get_project_by_id(
     id: int, 
     current_data: UserModel = Depends(get_current_user),
@@ -53,28 +53,3 @@ def delete_project(
 ):
     return service.delete_project_service(db, current_data, id)
 
-@router.post("/{id}/members", response_model=ProjectMemberDetailResponse)
-def add_member_project(
-    id: int,
-    user_id: int,
-    current_data: UserModel = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    return service.add_member_project_service(db, current_data, id, user_id)
-
-@router.delete("/{id}/members/{user_id}")
-def delete_member_project(
-    id: int,
-    user_id: int,
-    current_data: UserModel = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    return service.delete_member_project_service(db, current_data, id, user_id)
-
-@router.get("/{id}/members", response_model=list[ProjectMemberResponse])
-def get_member_project(
-    id: int,
-    current_data: UserModel = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    return service.get_member_project_service(id, current_data, db)

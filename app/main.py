@@ -5,6 +5,7 @@ from app.models import project, project_members, task, user
 from app.routers.auth import router as auth_router
 from app.routers.users import router as user_router
 from app.routers.projects import router as project_router
+from app.routers.project_member import router as project_member_router
 
 app = FastAPI()
 
@@ -27,6 +28,7 @@ def http_exception_handler(request: Request, exc: HTTPException):
 app.include_router(auth_router)
 app.include_router(user_router)
 app.include_router(project_router)
+app.include_router(project_member_router)
 
 @app.get("/")
 def root():

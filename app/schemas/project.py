@@ -21,3 +21,17 @@ class ProjectResponse(ProjectBase):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+class ProjectMemberResponse(BaseModel):
+    id: int
+    fullname: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+class ProjecDetailtResponse(ProjectBase):
+    id: int
+    owner_id: int
+    created_at: datetime
+    members: list[ProjectMemberResponse]
+
+    model_config = ConfigDict(from_attributes=True)
