@@ -136,6 +136,19 @@ def update_task_service(
     if (not user):
         raise not_found("Assignee not found")
 
+    if "assignee_id" in update_data:
+        assignee_member = (
+            db.query(ProjectMemberModel)
+            .filter(
+                ProjectMemberModel.user_id == update_data["assignee_id"],
+                ProjectMemberModel.project_id == task.project_id
+            )
+            .first()
+        )
+
+        if (not assignee_member):
+            raise forbidden("Assignee must be a member of this project")
+
     for key, value in update_data.items():
         setattr(task, key, value)
 
