@@ -29,6 +29,7 @@ def create_task_service(
         project_id=project_id,
         title=task_data.title,
         description=task_data.description,
+        assignee_id=current_user.id,
         priority=task_data.priority,
         due_date=task_data.due_date
     )
@@ -152,15 +153,6 @@ def update_task_service(
         raise forbidden("You do not have permission to update this task")
 
     update_data = task_data.model_dump(exclude_unset=True)
-
-    user = (
-        db.query(UserModel)
-        .filter(UserModel.id == task_data.assignee_id)
-        .first()
-    )
-
-    if (not user):
-        raise not_found("Assignee not found")
 
     if "assignee_id" in update_data:
         assignee_member = (
