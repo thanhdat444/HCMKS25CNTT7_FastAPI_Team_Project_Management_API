@@ -1,7 +1,7 @@
 from app.models.task import TaskModel
 from app.models.project_members import ProjectMemberModel
 from app.models.user import UserModel
-from app.schemas.task import TaskCreate
+from app.schemas.task import TaskCreate, TaskUpdate
 from sqlalchemy.orm import Session
 from app.core.exceptions import forbidden, not_found
 from app.models.task import TaskModel
@@ -93,5 +93,53 @@ def get_task_by_id_service(
 
     if not member:
         raise forbidden("You are not a member of this project")
+
+    return task
+
+def update_task_service(
+    task_id: int,
+    task_data: TaskUpdate,
+    current_data: UserModel,
+    db: Session
+):
+    task = (
+        db.query(TaskModel)
+        .filter(
+            task_id == TaskModel.id
+        )
+        .first()
+    )
+
+    if (not task):
+        raise not_found("Task not found")
+
+    member = (
+        db.query(ProjectMemberModel)
+        .filter(
+            ProjectMemberModel.user_id == current_data.id,
+            ProjectMemberModel.project_id == task.project_id
+        )
+        .first()
+    )
+
+    if (not member):
+        raise forbidden("You are not a member of this project")
+
+    update_data = task_data.model_dump(exclude_unset=True)
+
+    user = (
+        db.query(UserModel)
+        .filter(UserModel.id == task_data.assignee_id)
+        .first()
+    )
+
+    if (not user):
+        raise not_found("Assignee not found")
+
+    for key, value in update_data.items():
+        setattr(task, key, value)
+
+    db.commit()
+    db.refresh(task)
 
     return task
